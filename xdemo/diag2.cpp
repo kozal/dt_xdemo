@@ -8,7 +8,7 @@
 // #include "../include/ixcmd_sink.h"
 // #include "../include/iximg_sink.h"
 
-#include "diag2.h"
+#include "inc/diag2.h"
 #include <stdio.h>
 #include <iostream>
 
