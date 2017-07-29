@@ -2,6 +2,7 @@
 xdemo/xlog.dat
 xdemo/xdemo
 doc/*
+obj/*
 
 ### VisualStudioCode ###
 .vscode/*
@@ -10,6 +11,25 @@ doc/*
 # !.vscode/launch.json
 # !.vscode/extensions.json
 # !.vscode/c_cpp_properties.json
+
+### Eclipse ###
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+
+# Eclipse Core		
+.project
+# CDT-specific (C/C++ Development Tooling)
+.cproject
+
 
 ### C++ ###
 # Prerequisites
