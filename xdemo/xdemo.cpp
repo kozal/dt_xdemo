@@ -7,27 +7,14 @@
 #include "../include/xoff_correct.h"
 #include "../include/ixcmd_sink.h"
 #include "../include/iximg_sink.h"
+#include "diag2.h"
 #include <stdio.h>
 #include <iostream>
+
 using namespace std;
 uint32_t frame_count = 0;
 uint32_t lost_count = 0;
 
-void DisplayMenu()
-{
-    printf("Please choose one option from following: \n\n");
-    printf("1- Find device\n");
-    printf("2- Configure device\n");
-    printf("3- Open device\n");
-    printf("4- Send ASII command\n");
-    printf("5- Grab\n");
-    printf("6- Stop\n");
-    printf("7- Snap\n");
-    printf("8- Correct\n");
-    printf("9- Close device\n");
-
-    printf("ESC- Exit program\n\n\n");
-}
 
 class CmdSink : public IXCmdSink
 {
@@ -35,6 +22,7 @@ class CmdSink : public IXCmdSink
     void OnXError(uint32_t err_id, const char *err_msg_)
     {
         printf("OnXERROR: %u, %s\n", err_id, err_msg_);
+        handle_error_msg(err_id);
     }
     void OnXEvent(uint32_t event_id, float data)
     {
@@ -173,10 +161,6 @@ int main()
         case '4':
             printf("Please enter ASCII command:\n");
             cin >> send_str;
-            // xcommand.SendAscCmd(send_str, recv_str);
-            // xcommand.SendAscCmd(send_str.c_str(), recv_str);
-            // xcommand.SendAscCmd(send_str, recv_buffer);
-            // xcommand.SendAscCmd(send_str.c_str(), recv_buffer);
             xcommand.SendAscCmd((char *)send_str.c_str(), (char *)recv_buffer);
             recv_str = recv_buffer;
             printf("Device feedback %s\n", recv_str.c_str());
@@ -192,7 +176,7 @@ int main()
             xacq.Stop();
             break;
         case '7':
-            printf("Snap one fram \n");
+            printf("Snap one frame \n");
             xacq.Snap();
             break;
         case '8':
@@ -221,6 +205,66 @@ int main()
             xacq.Close();
             xcommand.Close();
             break;
+        case 'd':
+            printf("----device info----\n");
+            if(xcommand.GetIsOpen())
+            {
+                printf("X-GCU: IP %s, Cmd Port %d, Img Port %d\n",
+                    dev_->GetIP(),
+                    dev_->GetCmdPort(),
+                    dev_->GetImgPort());
+
+                printf("Number of DMs: %d, DM type: %d, Op mode: %d\n",
+                    dev_->GetCardNumber(),
+                    dev_->GetCardType(),
+                    dev_->GetOPMode());
+
+                printf("pix for 1 eng: %d, Pixel depth %d, total pix: %d\n",
+                    dev_->GetDMPixelNumber(),
+                    dev_->GetPixelDepth(),
+                    dev_->GetPixelNumber());
+
+                uint64_t temp_prt;
+                xcommand.GetPara(XPARA_INT_TIME, temp_prt);
+                printf("Integration Time :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_DM_GAIN, temp_prt);
+                printf("Gain :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_PIXEL_NUMBER, temp_prt);
+                printf("Total Pix Num :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_PIXEL_SIZE, temp_prt);
+                printf("Pix Size :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_PIXEL_DEPTH, temp_prt);
+                printf("Pix Depth :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_DM_PIXEL_NUM, temp_prt);
+                printf("Num Pixs / Energy :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_GCU_TEST_MODE, temp_prt);
+                printf("GCU Test Mode :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_prt);
+                printf("Detector Test Mode :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_GCU_TYPE, temp_prt);
+                printf("GCU Type :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_CARD_TYPE, temp_prt);
+                printf("Detector Type :%lu \n", temp_prt);
+
+                xcommand.GetPara(XPARA_ENERGY_MODE, temp_prt);
+                printf("Detector Energy Mode :%lu \n", temp_prt);
+            }
+            else
+                printf("No Opened Device\n");
+            break;
+        // case 'a':
+        //     printf("----device info----\n");
+        //     DisplayMenu2();
+        //     break;
         default:
             break;
         }
