@@ -1,15 +1,42 @@
+TARGET = xdemo
+CC = g++
 
-# xdemo: xdemo.cpp
-# 	g++ -g xdemo.cpp -I ../include ../../lib/libxlib.so -o xdemo
-# 	./xdemo
+IDIR = ../include
+IDIR += ../../lib/libxlib.so
+ODIR=obj
 
-all: xdemo.cpp
-	g++ --std=c++11 xdemo.cpp -g -I ../include ../../lib/libxlib.so -o xdemo
-# 	g++ -g xdemo.cpp -I ../include ../../lib/libxlib.so -o xdemo
+CPPSRC = xdemo.cpp diag2.cpp
+DEPS = diag2.h
 
+# Optimization level
+OPT = 0
+# Debugging format
+DEBUG =
+# Compiler flag to set the C Standard level.
+CPPSTANDARD = -std=c++11
 
-# run:
-# 	./xdemo
+CPPFLAGS = $(CPPSTANDARD)
+CPPFLAGS += -g$(DEBUG)
+CPPFLAGS += -O$(OPT)
+CPPFLAGS += -Wall
+
+# defining obj files
+OBJ := $(CPPSRC:.cpp=.o)
+
+# creating obj files
+%.o: %.c $(DEPS)
+	$(CC) -c -o $@ $< $(CPPFLAGS)
+	
+
+all: $(OBJ)
+	$(CC) $(CPPFLAGS) $(OBJ) -I$(IDIR) -o $(TARGET) $(DEPS)
 
 clean:
-	rm -f xdemo
+	rm -f $(TARGET)
+	rm -f $(OBJ)
+
+debug:
+	@echo $(OBJ)
+
+.PHONY: clean debug all
+	
