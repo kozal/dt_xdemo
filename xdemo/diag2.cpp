@@ -41,9 +41,7 @@ void DisplayMenu2()
     uint64_t temp_prt = 0;
     //xcommand.GetPara(XPARA_INT_TIME, temp_prt);
     printf("Integration Time :%lu \n", temp_prt);
-    
 }
-
 
 void handle_error_msg(uint32_t err_id)
 {
