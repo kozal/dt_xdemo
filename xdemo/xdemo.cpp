@@ -7,6 +7,8 @@
 #include "../include/xoff_correct.h"
 #include "../include/ixcmd_sink.h"
 #include "../include/iximg_sink.h"
+#include "../include/xtif_format.h"
+#include "../include/xanalyze.h"
 #include "inc/diag2.h"
 #include <stdio.h>
 #include <iostream>
@@ -14,7 +16,7 @@
 using namespace std;
 uint32_t frame_count = 0;
 uint32_t lost_count = 0;
-
+const char* img_name = "xcv.txt";
 
 class CmdSink : public IXCmdSink
 {
@@ -54,8 +56,12 @@ class ImgSink : public IXImgSink
     }
     void OnFrameReady(XImage *image_)
     {
+//    	XAnalyze xanalyze;
         printf("Frame %u ready, lost line %u\n", frame_count++, lost_count);
         printf("First pixel value: %u\n", image_->GetPixelVal(0, 0));
+        image_->Save(img_name);
+//        xanalyze.DoAnalyze(image_, 0);
+//        printf("Analyzed. row avg: %d, clm avg: %d\n", xanalyze._row_avg_[1], xanalyze._col_avg_[1]);
     }
 };
 
@@ -89,6 +95,11 @@ int main()
     xacq.EnableLineInfo(1);
 
     XOffCorrect xoff_correct;
+
+//    XImage *image2;
+//    XTifFormat xtif_format(image2, dev_);
+
+
     string send_str;
     string recv_str;
     char recv_buffer[1024];
@@ -205,9 +216,31 @@ int main()
             xacq.Close();
             xcommand.Close();
             break;
+        case '0':
+            uint64_t temp_val;
+            if (xcommand.GetIsOpen())
+            {
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,1);
+                printf("Detector Test Mode :%lu \n", temp_val);
+                xcommand.SetPara(XPARA_DM_TEST_MODE, 1,255); //Set all
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,1);
+                printf("Detector Test Mode :%lu \n", temp_val);
+            }
+            break;
+        case 'g':
+            uint64_t temp_2;
+            if (xcommand.GetIsOpen())
+            {
+                xcommand.GetPara(XPARA_GCU_TEST_MODE, temp_2);
+                printf("Detector Test Mode :%lu \n", temp_2);
+                xcommand.SetPara(XPARA_GCU_TEST_MODE, 1); //Set all
+                xcommand.GetPara(XPARA_GCU_TEST_MODE, temp_2);
+                printf("Detector Test Mode :%lu \n", temp_2);
+            }
+            break;
         case 'd':
             printf("----device info----\n");
-            if(xcommand.GetIsOpen())
+            if (xcommand.GetIsOpen())
             {
                 printf("X-GCU: IP %s, Cmd Port %d, Img Port %d\n",
                     dev_->GetIP(),
@@ -228,7 +261,7 @@ int main()
                 xcommand.GetPara(XPARA_INT_TIME, temp_prt);
                 printf("Integration Time :%lu \n", temp_prt);
 
-                xcommand.GetPara(XPARA_DM_GAIN, temp_prt);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_prt, 1);
                 printf("Gain :%lu \n", temp_prt);
 
                 xcommand.GetPara(XPARA_PIXEL_NUMBER, temp_prt);
@@ -246,7 +279,7 @@ int main()
                 xcommand.GetPara(XPARA_GCU_TEST_MODE, temp_prt);
                 printf("GCU Test Mode :%lu \n", temp_prt);
 
-                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_prt);
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_prt, 1);
                 printf("Detector Test Mode :%lu \n", temp_prt);
 
                 xcommand.GetPara(XPARA_GCU_TYPE, temp_prt);
@@ -261,10 +294,6 @@ int main()
             else
                 printf("No Opened Device\n");
             break;
-        // case 'a':
-        //     printf("----device info----\n");
-        //     DisplayMenu2();
-        //     break;
         default:
             break;
         }
