@@ -16,7 +16,8 @@
 using namespace std;
 uint32_t frame_count = 0;
 uint32_t lost_count = 0;
-const char* img_name = "xcv.txt";
+const char* img_name = "line_5_det_1.txt";
+const uint32_t lines_per_frame = 5; //Frame has 512 lines
 
 class CmdSink : public IXCmdSink
 {
@@ -65,13 +66,33 @@ class ImgSink : public IXImgSink
     }
 };
 
+// XDevice* find_device(XSystem xsystem)
+// {
+//     XDevice *dev_ = NULL;
+//     int32_t dev_num = 0;
+//     if (!xsystem.Open())
+//         return 0;
+
+//     dev_num = xsystem.FindDevice();
+//     if (dev_num <= 0)
+//     {
+//         printf("No device found.\n ");
+//         return 0;
+//     }
+//     //Get the first device
+//     dev_ = xsystem.GetDevice(0);
+//     printf("X-GCU: IP %s, Cmd Port %d, Img Port %d\n",
+//             dev_->GetIP(),
+//             dev_->GetCmdPort(),
+//             dev_->GetImgPort());
+//     return dev_;
+// }
+
 CmdSink cmd_sink;
 ImgSink img_sink;
 int main()
 {
     char host_ip[20];
-    // printf("Please input IP address of network adapter:\n");
-    // cin>>host_ip;
     strcpy(host_ip, "192.168.2.5");
 
     XSystem xsystem(host_ip);
@@ -86,7 +107,7 @@ int main()
     XCommand xcommand(&xfactory);
     xcommand.RegisterEventSink(&cmd_sink);
 
-    XFrameTransfer xtransfer(512); //Frame has 512 lines
+    XFrameTransfer xtransfer(lines_per_frame);
     xtransfer.RegisterEventSink(&img_sink);
 
     XAcquisition xacq(&xfactory);
@@ -104,7 +125,57 @@ int main()
     string recv_str;
     char recv_buffer[1024];
 
-    DisplayMenu();
+/* find device */
+    if (!xsystem.Open())
+    {
+        printf("Could not communicate IP %s", host_ip);
+        return 0;
+    }
+    
+
+    dev_num = xsystem.FindDevice();
+    if (dev_num <= 0)
+    {
+        printf("No device found.\n ");
+        return 0;
+    }
+    //Get the first device
+    dev_ = xsystem.GetDevice(0);
+    printf("X-GCU: IP %s, Cmd Port %d, Img Port %d\n",
+            dev_->GetIP(),
+            dev_->GetCmdPort(),
+            dev_->GetImgPort());
+/* end find device */
+
+/* open device */
+    if (xcommand.Open(dev_))
+    {
+        printf("Command channel open successfully\n");
+        if (xacq.Open(dev_, &xcommand))
+        {
+            printf("Image channel open successfully\n");
+            xoff_correct.Open(dev_);
+        }
+        else
+            printf("Image channel fail to open\n");
+    }
+    else
+    {
+        printf("Command channel fail to open\n");
+        return 0;
+    }
+/*end open device*/
+
+    /* number of pix */
+    if (xcommand.GetIsOpen())
+    {
+        uint64_t num_pix;
+        xcommand.GetPara(XPARA_PIXEL_NUMBER, num_pix);
+        printf("Number of Detector Cards: %d\n", dev_->GetCardNumber());
+        printf("Number of pixels :%lu \n", num_pix);
+    }
+
+    DisplayMenu2();
     int input_char;
     do
     {
@@ -114,22 +185,6 @@ int main()
         switch (input_char)
         {
         case '1':
-
-            if (!xsystem.Open())
-                return 0;
-
-            dev_num = xsystem.FindDevice();
-            if (dev_num <= 0)
-            {
-                printf("No device found.\n ");
-                return 0;
-            }
-            //Get the first device
-            dev_ = xsystem.GetDevice(0);
-            printf("X-GCU: IP %s, Cmd Port %d, Img Port %d\n",
-                   dev_->GetIP(),
-                   dev_->GetCmdPort(),
-                   dev_->GetImgPort());
             break;
         case '2':
             printf("Please input device IP\n");
@@ -151,23 +206,8 @@ int main()
             }
             else
                 printf("Fail to configure device\n");
-
             break;
         case '3':
-            if (xcommand.Open(dev_))
-            {
-                printf("Command channel open successfully\n");
-                if (xacq.Open(dev_, &xcommand))
-                {
-                    printf("Image channel open successfully\n");
-                    xoff_correct.Open(dev_);
-                }
-                else
-                    printf("Image channel fail to open\n");
-            }
-            else
-                printf("Command channel fail to open\n");
-
             break;
         case '4':
             printf("Please enter ASCII command:\n");
