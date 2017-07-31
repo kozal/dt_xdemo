@@ -33,14 +33,14 @@ void DisplayMenu()
 void DisplayMenu2()
 {
     printf("Please choose one option from following: \n\n");
-    printf("1- Find device\n");
-    printf("3- Open device\n");
-    printf("4- Send ASII command\n");
+    printf("d- Device info\n");
+    printf("g- XCU Test Mode\n");
+    printf("0- Detector Test Mode\n");
+    printf("5- Grab\n");
+    printf("6- Stop\n");
+    printf("7- Snap\n");
     printf("9- Close device\n");
     printf("ESC- Exit program\n\n\n");
-    uint64_t temp_prt = 0;
-    //xcommand.GetPara(XPARA_INT_TIME, temp_prt);
-    printf("Integration Time :%lu \n", temp_prt);
 }
 
 void handle_error_msg(uint32_t err_id)
