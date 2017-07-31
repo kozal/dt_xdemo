@@ -2,7 +2,8 @@
 xdemo/xlog.dat
 xdemo/xdemo
 doc/*
-obj/*
+xdemo/obj/*
+xdemo/bak/*
 xdemo/*.txt
 
 ### VisualStudioCode ###
