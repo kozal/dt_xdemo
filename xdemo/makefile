@@ -3,7 +3,9 @@ CC = g++
 
 IDIR = ../include
 IDIR += ../../lib/libxlib.so
-ODIR = obj
+ODIR = obj/
+# LDIR += ../../lib/libxlib.so
+# ODIR =
 
 CPPSRC = xdemo.cpp diag2.cpp
 _DEPS = diag2.h
@@ -23,17 +25,17 @@ CPPFLAGS += -Wall
 
 # defining obj files
 OBJ := $(CPPSRC:.cpp=.o)
-OBJ2 = $(addprefix $(ODIR)/,$(CPPSRC:.cpp=.o))
+OBJ2 = $(addprefix $(ODIR),$(CPPSRC:.cpp=.o))
 
 # creating obj files
-$(ODIR)/%.o: %.cpp $(DEPS)
+$(ODIR)%.o: %.cpp $(DEPS)
 #%.o: %.cpp $(DEPS)
 	$(CC) -c -o $@ $< $(CPPFLAGS)
 	
 
 all: $(OBJ2)
-#	$(CC) $(CPPFLAGS) $(OBJ) -I$(IDIR) -o $(TARGET) $(DEPS)
 	$(CC) $(CPPFLAGS) $^ -I$(IDIR) -o $(TARGET)
+#	$(CC) $(CPPFLAGS) $^ -I$(IDIR) -l$(LDIR) -o $(TARGET)
 
 clean:
 	rm -f $(TARGET)
