@@ -17,7 +17,7 @@ using namespace std;
 uint32_t frame_count = 0;
 uint32_t lost_count = 0;
 const char* img_name = "line_5_det_1.txt";
-const uint32_t lines_per_frame = 5; //Frame has 512 lines
+const uint32_t lines_per_frame = 512; //Frame has 512 lines
 
 class CmdSink : public IXCmdSink
 {
@@ -43,6 +43,16 @@ class CmdSink : public IXCmdSink
 
 class ImgSink : public IXImgSink
 {
+    std::string fileName;
+public:
+    ImgSink( const std::string &d ) {
+        fileName = d;
+    }
+
+    void setFileName( const std::string &d ) {
+        fileName = d;
+    }
+
     void OnXError(uint32_t err_id, const char *err_msg_)
     {
         printf("OnXERROR: %u, %s\n", err_id, err_msg_);
@@ -60,7 +70,9 @@ class ImgSink : public IXImgSink
 //    	XAnalyze xanalyze;
         printf("Frame %u ready, lost line %u\n", frame_count++, lost_count);
         printf("First pixel value: %u\n", image_->GetPixelVal(0, 0));
-        image_->Save(img_name);
+        std::string fn = fileName+"_"+std::to_string(frame_count) + ".txt";
+        std::cout << "Saving " << fn << std::endl;
+        image_->Save( fn.c_str() );
 //        xanalyze.DoAnalyze(image_, 0);
 //        printf("Analyzed. row avg: %d, clm avg: %d\n", xanalyze._row_avg_[1], xanalyze._col_avg_[1]);
     }
@@ -89,11 +101,16 @@ class ImgSink : public IXImgSink
 // }
 
 CmdSink cmd_sink;
-ImgSink img_sink;
-int main()
+ImgSink img_sink("capture_file");
+int main(int argc, char* argv[] )
 {
     char host_ip[20];
     strcpy(host_ip, "192.168.2.5");
+
+    if (argc>1) {
+        std::string fileName = argv[1];
+        img_sink.setFileName(fileName);
+    }
 
     XSystem xsystem(host_ip);
     XDevice *dev_ = NULL;
