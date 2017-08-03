@@ -2,6 +2,7 @@
 xdemo/xlog.dat
 xdemo/xdemo
 doc/*
+!doc/info.txt
 xdemo/obj/*
 xdemo/bak/*
 xdemo/*.txt

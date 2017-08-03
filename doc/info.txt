@@ -1,0 +1,65 @@
+./xdemo /home/omer/shared/filename
+./xdemo /home/omer/shared/falan
+
+IXCmdSink CmdSink cmd_sink;
+IXImgSink ImgSink img_sink;
+XSystem xsystem(host_ip);
+XDevice* dev_ = NULL;
+XGigFactory xfactory;
+XCommand xcommand(&xfactory);
+XFrameTransfer xtransfer(512);
+XAcquisition xacq(&xfactory);
+XOffCorrect xoff_correct;
+
+XAnalyze
+XDualEngCorrect
+XDualLineCorrect
+XImage
+XMultiTransfer
+XPiecewiseCorrect
+XPixelCorrect
+XReferenceCorrect
+XTifFormat
+XDisplay (win only)
+
+
+IXCmdSink
+The user defines derived class from this abstract class to handle events of the XCommand object.
+IXImgSink
+The user defines derived class from this abstract class to handle events of the XAcquisition object.
+XAcquisition
+This class is in charge of getting image data from the X-GCU.
+XAnalyze
+Provides the basic analysis functions.
+XCommand
+This class is in charge of command controlling of the X-GCU.
+XDevice
+Wraps the basic parameters of the X-GCU which is used as argument by other classes.
+XDisplay
+Is in charge of displaying frames. Only available for the Windows system.
+XDualEngCorrect
+Reconstructs the dual energy image of the interlaced dual-energy raw data.
+XDualLineCorrect
+Reconstructs the line sequence of the dual-line detector sub-system.
+XFrameTransfer
+Gets line data from the XAcquisition object and combines line data into frame.
+XGigFactory
+Is in charge of generating objects of network.
+XImage
+Wraps frame data.
+XMultiTransfer
+When connecting with the multi-detector synchronizes each XFrameTranser object and generates the whole frame.
+XOffCorrect
+Provides off-board gain and offset correcting functions for all operational modes except non-continuous hi/lo trigger mode.
+XOffHLCorrect
+Provides off-board gain and offset correcting functions only for non-continuous hi/lo trigger mode.
+XPiecewiseCorrect
+Provides off-board three points piecewise correction functions for all operation modes except non-continuous hi/lo trigger mode.
+XPixelCorrect
+Provides functions to correct bad pixels.
+XReferenceCorrect
+Provides functions to correct signal variations caused by LINAC X-ray source.
+XSystem
+This class communicates with the X-GCU by broadcast, which reads and sets the Ethernet configurations of the X-GCU.
+XTifFormat
+Provides manipulating ways of TIFF format image.
