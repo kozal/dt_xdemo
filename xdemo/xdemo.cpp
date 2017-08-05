@@ -101,7 +101,7 @@ public:
 // }
 
 CmdSink cmd_sink;
-ImgSink img_sink("capture_file");
+ImgSink img_sink("img/capture_file");
 int main(int argc, char* argv[] )
 {
     char host_ip[20];
@@ -194,6 +194,7 @@ int main(int argc, char* argv[] )
 
     DisplayMenu2();
     int input_char;
+    uint64_t temp_val;
     do
     {
         printf("Please enter option. \n");
@@ -201,30 +202,47 @@ int main(int argc, char* argv[] )
 
         switch (input_char)
         {
-        case '1':
-            break;
-        case '2':
-            printf("Please input device IP\n");
-            cin >> dev_ip;
-            printf("Please input device cmd port\n");
-            cin >> dev_cmd_port;
-            printf("Please input device img port\n");
-            cin >> dev_img_port;
-
-            if (dev_)
+        case '0':   //Detector None Test Mode
+            if (xcommand.GetIsOpen())
             {
-                dev_->SetIP(dev_ip);
-                dev_->SetCmdPort(dev_cmd_port);
-                dev_->SetImgPort(dev_img_port);
+                xcommand.SetPara(XPARA_DM_TEST_MODE, 0,255); //Reset all
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,1);
+                printf("Detector 1 Test Mode :%lu \n", temp_val);
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,2);
+                printf("Detector 2 Test Mode :%lu \n", temp_val);
             }
-            if (1 == xsystem.ConfigureDevice(dev_))
-            {
-                printf("Configure device successfully, please find device again\n");
-            }
-            else
-                printf("Fail to configure device\n");
             break;
-        case '3':
+        case '1':   //Detector 1 Test Mode
+            if (xcommand.GetIsOpen())
+            {
+                xcommand.SetPara(XPARA_DM_TEST_MODE, 1, 1); //Set 1
+                xcommand.SetPara(XPARA_DM_TEST_MODE, 0, 2); //Reset 2
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,1);
+                printf("Detector 1 Test Mode :%lu \n", temp_val);
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,2);
+                printf("Detector 2 Test Mode :%lu \n", temp_val);
+            }
+            break;
+        case '2':   //Detector 2 Test Mode
+            if (xcommand.GetIsOpen())
+            {
+                xcommand.SetPara(XPARA_DM_TEST_MODE, 0, 1); //Reset 1
+                xcommand.SetPara(XPARA_DM_TEST_MODE, 1, 2); //Set 2
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,1);
+                printf("Detector 1 Test Mode :%lu \n", temp_val);
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,2);
+                printf("Detector 2 Test Mode :%lu \n", temp_val);
+            }
+            break;
+        case '3':   //Detector All Test Mode
+            if (xcommand.GetIsOpen())
+            {
+                xcommand.SetPara(XPARA_DM_TEST_MODE, 1,255); //Set all
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,1);
+                printf("Detector 1 Test Mode :%lu \n", temp_val);
+                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,2);
+                printf("Detector 2 Test Mode :%lu \n", temp_val);
+            }
             break;
         case '4':
             printf("Please enter ASCII command:\n");
@@ -273,27 +291,45 @@ int main(int argc, char* argv[] )
             xacq.Close();
             xcommand.Close();
             break;
-        case '0':
-            uint64_t temp_val;
+        case 'g':
             if (xcommand.GetIsOpen())
             {
-                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,1);
-                printf("Detector Test Mode :%lu \n", temp_val);
-                xcommand.SetPara(XPARA_DM_TEST_MODE, 1,255); //Set all
-                xcommand.GetPara(XPARA_DM_TEST_MODE, temp_val,1);
-                printf("Detector Test Mode :%lu \n", temp_val);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_val, 1);
+                printf("Gain DM1:%lX \n", temp_val);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_val, 2);
+                printf("Gain DM2:%lX \n", temp_val);
             }
             break;
-        case 'g':
-            uint64_t temp_2;
+        case 'x':
             if (xcommand.GetIsOpen())
             {
-                xcommand.GetPara(XPARA_GCU_TEST_MODE, temp_2);
-                printf("Detector Test Mode :%lu \n", temp_2);
+                xcommand.GetPara(XPARA_GCU_TEST_MODE, temp_val);
+                printf("XGCU Test Mode :%lu \n", temp_val);
                 xcommand.SetPara(XPARA_GCU_TEST_MODE, 1); //Set all
-                xcommand.GetPara(XPARA_GCU_TEST_MODE, temp_2);
-                printf("Detector Test Mode :%lu \n", temp_2);
+                xcommand.GetPara(XPARA_GCU_TEST_MODE, temp_val);
+                printf("XGCU Test Mode :%lu \n", temp_val);
             }
+            break;
+        case 'c':   //configure device
+            printf("Please input device IP\n");
+            cin >> dev_ip;
+            printf("Please input device cmd port\n");
+            cin >> dev_cmd_port;
+            printf("Please input device img port\n");
+            cin >> dev_img_port;
+
+            if (dev_)
+            {
+                dev_->SetIP(dev_ip);
+                dev_->SetCmdPort(dev_cmd_port);
+                dev_->SetImgPort(dev_img_port);
+            }
+            if (1 == xsystem.ConfigureDevice(dev_))
+            {
+                printf("Configure device successfully, please find device again\n");
+            }
+            else
+                printf("Fail to configure device\n");
             break;
         case 'd':
             printf("----device info----\n");
