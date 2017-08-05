@@ -1,0 +1,15 @@
+Set detector 1 gain
+[SG,W,1,0101]
+Set detector 2 gain
+[SG,W,2,0101]
+
+Test Modes
+Read Detector 1&2 Mode
+[DT,R,1]
+[DT,R,2]
+Write All Detectors Normal Mode
+[DT,W,FF,0]
+# DT1 Test mode
+[DT,W,1,1]
+# DT2 Normal Mode
+[DT,W,2,0]

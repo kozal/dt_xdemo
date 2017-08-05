@@ -1,10 +1,11 @@
 # project files
 xdemo/xlog.dat
 xdemo/xdemo
-doc/*
+# doc/*
 !doc/info.txt
 xdemo/obj/*
 xdemo/bak/*
+xdemo/img/*
 xdemo/*.txt
 
 ### VisualStudioCode ###
