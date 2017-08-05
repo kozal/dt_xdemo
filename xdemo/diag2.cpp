@@ -34,8 +34,13 @@ void DisplayMenu2()
 {
     printf("Please choose one option from following: \n\n");
     printf("d- Device info\n");
-    printf("g- XCU Test Mode\n");
-    printf("0- Detector Test Mode\n");
+    printf("x- XCU Test Mode\n");
+    printf("g- Read Gains\n");
+    printf("0- Detector All Normal Mode\n");
+    printf("1- Detector 1 Test Mode\n");
+    printf("2- Detector 2 Test Mode\n");
+    printf("3- Detector All Test Mode\n");
+    printf("4- Send ASII command\n");
     printf("5- Grab\n");
     printf("6- Stop\n");
     printf("7- Snap\n");
@@ -57,3 +62,12 @@ void handle_error_msg(uint32_t err_id)
             break;
     }
 }
+
+// void display_info(XCommand &xcommand)
+// {
+//     uint64_t temp_prt;
+//     xcommand.GetPara(XPARA_INT_TIME, temp_prt);
+//     printf("Integration Time :%lu \n", temp_prt);
+
+// }
+
