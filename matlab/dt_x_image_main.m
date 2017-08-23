@@ -3,28 +3,13 @@ cd 'C:\Users\yusuf\Desktop\xview_ubuntu\dt_xdemo\matlab'
 clearvars;
 close all;
 clc;
+
+img_folder = 'C:\Users\yusuf\Desktop\xview_ubuntu\dt_xdemo\xdemo\img\';
+[image_16, base_name] = load_img_txt(img_folder);
 %% properties
-% num_DMs = 2;
-total_pix_num = 256;
-
-%% load file
-% img_folder = '..\dt_xdemo\xdemo\img';
-img_folder = 'C:\Users\yusuf\Desktop\xview_ubuntu\dt_xdemo\xdemo\img';
-% base_name = 'd1_test_d2_norm';
-% base_name = 'd2_test_d1_norm';
-base_name = 'he01_le12';
-% base_name = 'he12_le01';
-base_name_1 = sprintf('%s_1', base_name);
-baseFileName = sprintf('%s_1.txt', base_name);
-fullFileName = fullfile(img_folder, baseFileName);
-if not(exist(fullFileName, 'file'))
-    message = sprintf('%s does not exists!!!', fullFileName);
-    errordlg(message,'File Error');
-    error('Error: File Error.')
-end
-
-load(fullFileName)
-image_16 = uint16(eval(base_name_1));
+num_DMs = 10;
+total_pix_num = num_DMs * 128;
+rows_to_show = 1:800;
 
 %% check file
 if (total_pix_num ~= size(image_16,2))
@@ -33,9 +18,8 @@ if (total_pix_num ~= size(image_16,2))
 end
 
 %% display file
-% figure,
+figure,
 subplot(1,3,1),
-% imagesc(image_16,[50 50000]); colormap(gray);
 imagesc(image_16), title(base_name)
 % imshow(image_16), title(base_name)
 colormap gray, axis image
@@ -60,3 +44,29 @@ colormap gray, axis image
 subplot(1,3,3),
 imagesc(img_hi_en), title('high eng')
 colormap gray, axis image
+%%
+% figure,
+% % subplot(1,3,2),
+% % imagesc(img_lo_en(1:800,1:64*9)), title('low eng')
+% imagesc(img_lo_en), title('low eng')
+% colormap gray, axis image
+%%
+% overlap_lines = [65, 129, 193, 257, 321, 322, 385, 448, 512, 576, (num_DMs-1)*64+1:(num_DMs)*64];
+overlap_lines = [65, 129, 193, 257, 321, 322, 385, 448, 512, 576];
+img_lo_no_ol = img_lo_en;
+img_lo_no_ol(:,overlap_lines)=[];
+figure,
+imagesc(img_lo_no_ol(rows_to_show,:)), title('low eng')
+colormap gray, axis image
+img_hi_no_ol = img_hi_en;
+img_hi_no_ol(:,overlap_lines)=[];
+figure,
+imagesc(img_hi_no_ol(rows_to_show,:)), title('hi eng')
+colormap gray, axis image
+%%
+% figure,
+% imshow(img_lo_no_ol(rows_to_show,:)), title('low eng')
+% colormap gray, axis image; impixelinfo
+% figure,
+% imshow(img_hi_no_ol(rows_to_show,:)), title('hi eng')
+% colormap gray, axis image; impixelinfo
