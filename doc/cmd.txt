@@ -2,6 +2,15 @@ Set detector 1 gain
 [SG,W,1,0101]
 Set detector 2 gain
 [SG,W,2,0101]
+# read gain
+[SG,R,1]
+# read Integration Time
+[ST,R,0]
+# set Integration Time to 7500
+[ST,W,0,1D4C]
+
+# save to user flash
+[IN,S,0]
 
 Test Modes
 Read Detector 1&2 Mode
@@ -13,3 +22,40 @@ Write All Detectors Normal Mode
 [DT,W,1,1]
 # DT2 Normal Mode
 [DT,W,2,0]
+
+# Reads X-GCU’s voltage, temperature and humidity
+[GI,R,0] = [0,02DC066C04CF044501530000]
+# Reads DM’s voltage, temperature and humidity.
+[DI,R,1] = [0,04C402D2069604AB064D0673051C01170000FFFF]
+
+2 DM:
+X-GCU: IP 192.168.2.3, Cmd Port 3000, Img Port 4001
+Number of DMs: 2, DM type: 2, Op mode: 0
+pix for 1 eng: 7, Pixel depth 16, total pix: 256
+Integration Time :2000 
+Gain :2561 
+Total Pix Num :256 
+Pix Size :15 
+Pix Depth :16 
+Num Pixs / Energy :7 
+GCU Test Mode :0 
+Detector Test Mode :0 
+GCU Type :0 
+Detector Type :2 
+Detector Energy Mode :1 
+
+1 DM:
+X-GCU: IP 192.168.2.3, Cmd Port 3000, Img Port 4001
+Number of DMs: 1, DM type: 2, Op mode: 0
+pix for 1 eng: 7, Pixel depth 16, total pix: 128
+Integration Time :2000 
+Gain :2561 
+Total Pix Num :128 
+Pix Size :15 
+Pix Depth :16 
+Num Pixs / Energy :7 
+GCU Test Mode :0 
+Detector Test Mode :0 
+GCU Type :0 
+Detector Type :2 
+Detector Energy Mode :1
