@@ -17,7 +17,7 @@ using namespace std;
 uint32_t frame_count = 0;
 uint32_t lost_count = 0;
 const char* img_name = "line_5_det_1.txt";
-const uint32_t lines_per_frame = 512; //Frame has 512 lines
+const uint32_t lines_per_frame = 512*3; //Frame has 512 lines
 
 class CmdSink : public IXCmdSink
 {
@@ -105,6 +105,8 @@ ImgSink img_sink("img/capture_file");
 int main(int argc, char* argv[] )
 {
     char host_ip[20];
+    // printf("Please input IP address of network adapter:\n");
+    // cin>>host_ip;
     strcpy(host_ip, "192.168.2.5");
 
     if (argc>1) {
@@ -298,6 +300,22 @@ int main(int argc, char* argv[] )
                 printf("Gain DM1:%lX \n", temp_val);
                 xcommand.GetPara(XPARA_DM_GAIN, temp_val, 2);
                 printf("Gain DM2:%lX \n", temp_val);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_val, 3);
+                printf("Gain DM3:%lX \n", temp_val);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_val, 4);
+                printf("Gain DM4:%lX \n", temp_val);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_val, 5);
+                printf("Gain DM5:%lX \n", temp_val);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_val, 6);
+                printf("Gain DM6:%lX \n", temp_val);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_val, 7);
+                printf("Gain DM7:%lX \n", temp_val);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_val, 8);
+                printf("Gain DM8:%lX \n", temp_val);
+                xcommand.GetPara(XPARA_DM_GAIN, temp_val, 9);
+                printf("Gain DM9:%lX \n", temp_val);
+                // xcommand.GetPara(XPARA_DM_GAIN, temp_val, 10);
+                // printf("Gain DM10:%lX \n", temp_val);
             }
             break;
         case 'x':
